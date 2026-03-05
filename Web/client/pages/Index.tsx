@@ -190,7 +190,7 @@ export default function Index() {
                     Book Appointment
                   </Button>
                 </Link>
-                <a href="https://ai-chatbot-personal.streamlit.app/" target="_blank" rel="noopener noreferrer">
+                <a href="https://vaidya-llm-1.streamlit.app/" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" variant="outline">
                     Check Symptoms
                   </Button>
