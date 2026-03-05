@@ -1,14 +1,17 @@
-import serverless from 'serverless-http';
 import { createServer } from '../../server/index';
 
 const app = createServer();
-const handler = serverless(app);
 
-export default handler;
-
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-};
+export default async function handler(req: any, res: any) {
+  // Let Express handle the request
+  return new Promise((resolve, reject) => {
+    app(req, res, (err?: any) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(undefined);
+      }
+    });
+  });
+}
 
