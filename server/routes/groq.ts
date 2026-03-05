@@ -11,26 +11,27 @@ const getApiKey = (): string => {
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 async function callGroq(prompt: string, systemInstruction?: string): Promise<string> {
-  const messages: any[] = [];
+  const apiKey = getApiKey();
   
-  if (systemInstruction) {
-    messages.push({ role: "system", content: systemInstruction });
-  }
-  
-  messages.push({ role: "user", content: prompt });
+  const messages = systemInstruction
+    ? [
+        { role: "system", content: systemInstruction },
+        { role: "user", content: prompt }
+      ]
+    : [{ role: "user", content: prompt }];
 
   const response = await fetch(GROQ_API_URL, {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${getApiKey()}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: "llama-3.3-70b-versatile",
-      messages: messages,
-      temperature: 0.3,
-      max_tokens: 2048
-    })
+      messages,
+      temperature: 0.7,
+      max_tokens: 2048,
+    }),
   });
 
   if (!response.ok) {
