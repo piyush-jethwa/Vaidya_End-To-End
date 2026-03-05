@@ -1,0 +1,7 @@
+{
+  "name": "Vaidya AI Gemini Agent",
+  "description": "An advanced medical AI assistant powered by Gemini 3 Pro. Features autonomous clinical agent, multimodal diagnosis, doctor recommendation reasoning, and medical report summarization.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
