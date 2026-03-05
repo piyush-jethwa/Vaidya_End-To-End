@@ -27,8 +27,15 @@ export const analyzeMedicalCase = async (
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Server error: ${response.status}`);
+      // Try to parse error as JSON, fallback to text
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || `Server error: ${response.status}`);
+      }
     }
 
     const data = await response.json();
@@ -62,8 +69,15 @@ export const sendChatMessage = async (
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Server error: ${response.status}`);
+      // Try to parse error as JSON, fallback to text
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || `Server error: ${response.status}`);
+      }
     }
 
     const data = await response.json();
@@ -91,8 +105,15 @@ export const getDoctorRecommendation = async (symptoms: string, riskFactors: str
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Server error: ${response.status}`);
+      // Try to parse error as JSON, fallback to text
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || `Server error: ${response.status}`);
+      }
     }
 
     const data = await response.json();
@@ -122,8 +143,15 @@ export const summarizeMedicalReport = async (file: File): Promise<string> => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Server error: ${response.status}`);
+      // Try to parse error as JSON, fallback to text
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || `Server error: ${response.status}`);
+      }
     }
 
     const data = await response.json();
@@ -150,8 +178,15 @@ export const checkDrugInteractions = async (medList: string, imageFile?: File): 
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Server error: ${response.status}`);
+      // Try to parse error as JSON, fallback to text
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || `Server error: ${response.status}`);
+      }
     }
 
     const data = await response.json();
@@ -178,8 +213,15 @@ export const analyzeDigitalTwin = async (profileData: any): Promise<any> => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Server error: ${response.status}`);
+      // Try to parse error as JSON, fallback to text
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || `Server error: ${response.status}`);
+      }
     }
 
     const data = await response.json();
@@ -211,8 +253,15 @@ export const verifyMedicalClaims = async (query: string): Promise<string> => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `Server error: ${response.status}`);
+      // Try to parse error as JSON, fallback to text
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || `Server error: ${response.status}`);
+      }
     }
 
     const data = await response.json();
@@ -222,3 +271,4 @@ export const verifyMedicalClaims = async (query: string): Promise<string> => {
     throw new Error(`Failed to verify claim: ${error.message}`);
   }
 };
+
