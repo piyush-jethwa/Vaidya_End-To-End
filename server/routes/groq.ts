@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import { Request, Response } from "express";
 
 const getApiKey = (): string => {
   const apiKey = process.env.GROQ_API_KEY;
@@ -42,7 +42,7 @@ async function callGroq(prompt: string, systemInstruction?: string): Promise<str
   return data.choices[0]?.message?.content || "No response";
 }
 
-export const sendChatMessage = async (req: Request, res: Response) => {
+export const sendChatMessage = async (req: any, res: any) => {
   try {
     const { message, history, mode } = req.body;
 
@@ -111,7 +111,7 @@ export const sendChatMessage = async (req: Request, res: Response) => {
   }
 };
 
-export const analyzeMedicalCase = async (req: Request, res: Response) => {
+export const analyzeMedicalCase = async (req: any, res: any) => {
   try {
     const { symptoms, language } = req.body;
 
@@ -145,7 +145,7 @@ Symptoms/Description: ${symptoms}`;
 };
 
 // Doctor Recommendation
-export const getDoctorRecommendation = async (req: Request, res: Response) => {
+export const getDoctorRecommendation = async (req: any, res: any) => {
   try {
     const { symptoms, riskFactors } = req.body;
 
@@ -165,7 +165,7 @@ export const getDoctorRecommendation = async (req: Request, res: Response) => {
 };
 
 // Summarize Medical Report
-export const summarizeMedicalReport = async (req: Request, res: Response) => {
+export const summarizeMedicalReport = async (req: any, res: any) => {
   try {
     const { reportText } = req.body;
 
@@ -185,7 +185,7 @@ export const summarizeMedicalReport = async (req: Request, res: Response) => {
 };
 
 // Drug Interactions
-export const checkDrugInteractions = async (req: Request, res: Response) => {
+export const checkDrugInteractions = async (req: any, res: any) => {
   try {
     const { medications } = req.body;
 
@@ -205,7 +205,7 @@ export const checkDrugInteractions = async (req: Request, res: Response) => {
 };
 
 // Digital Twin Analysis
-export const analyzeDigitalTwin = async (req: Request, res: Response) => {
+export const analyzeDigitalTwin = async (req: any, res: any) => {
   try {
     const { profileData } = req.body;
 
@@ -225,7 +225,7 @@ export const analyzeDigitalTwin = async (req: Request, res: Response) => {
 };
 
 // Fact Check Medical Claims
-export const verifyMedicalClaims = async (req: Request, res: Response) => {
+export const verifyMedicalClaims = async (req: any, res: any) => {
   try {
     const { query } = req.body;
 
