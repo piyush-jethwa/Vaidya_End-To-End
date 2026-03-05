@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express-serve-static-core";
 
 const getApiKey = (): string => {
   const apiKey = process.env.GROQ_API_KEY;
