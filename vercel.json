@@ -16,7 +16,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/server"
+      "dest": "/server/index.ts"
     },
     {
       "src": "/(.*)",
@@ -24,3 +24,4 @@
     }
   ]
 }
+
