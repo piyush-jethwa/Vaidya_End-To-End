@@ -1,11 +1,8 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 import path from "path";
 
 // Server build configuration
-export default defineConfig(({ mode }) => {
-  // Load env variables - need to explicitly load them for server build
-  const env = loadEnv(mode, process.cwd(), '');
-
+export default defineConfig(() => {
   return {
     build: {
       lib: {
@@ -54,8 +51,6 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       "process.env.NODE_ENV": '"production"',
-      // Expose GROQ_API_KEY at build time - this makes it available in the bundled code
-      "process.env.GROQ_API_KEY": JSON.stringify(env.GROQ_API_KEY || process.env.GROQ_API_KEY || ''),
     },
   };
 });
