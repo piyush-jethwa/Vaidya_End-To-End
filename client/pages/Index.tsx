@@ -32,6 +32,7 @@ import {
   Bot,
   Brain,
   Building2,
+  Settings,
 } from "lucide-react";
 
 export default function Index() {
@@ -190,12 +191,18 @@ export default function Index() {
               >
                 Reviews
               </a>
-              <a
+<a
                 href="#contact"
                 className="text-gray-700 hover:text-purple-600 transition-colors"
               >
                 Contact
               </a>
+              <Link
+                to="/settings"
+                className="text-gray-700 hover:text-purple-600 transition-colors"
+              >
+                Settings
+              </Link>
             </div>
             <div className="flex space-x-2">
               <Link to="/hospital-command-center">

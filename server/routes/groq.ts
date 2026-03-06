@@ -1,17 +1,25 @@
 import { Request, Response } from "express";
 
-const getApiKey = (): string => {
+// Get API key - supports both environment and user-provided keys
+const getApiKey = (req?: Request): string => {
+  // First check if user provided their own key in the request
+  const userApiKey = (req?.body as any)?.userApiKey || (req?.body as any)?.apiKey;
+  if (userApiKey) {
+    return userApiKey;
+  }
+  
+  // Fall back to environment variable
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    throw new Error("GROQ_API_KEY environment variable is not set");
+    throw new Error("GROQ_API_KEY environment variable is not set. Please enter your API key in the app.");
   }
   return apiKey;
 };
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-async function callGroq(prompt: string, systemInstruction?: string): Promise<string> {
-  const apiKey = getApiKey();
+async function callGroq(prompt: string, systemInstruction?: string, req?: Request): Promise<string> {
+  const apiKey = getApiKey(req);
   
   const messages = systemInstruction
     ? [
@@ -45,7 +53,7 @@ async function callGroq(prompt: string, systemInstruction?: string): Promise<str
 
 export const sendChatMessage = async (req: any, res: any) => {
   try {
-    const { message, history, mode } = req.body;
+    const { message, history, mode, userApiKey } = req.body;
 
     if (!message) {
       res.status(400).json({ error: "Message is required" });
@@ -57,6 +65,17 @@ export const sendChatMessage = async (req: any, res: any) => {
       systemInstruction = `You are Vaidya AI, a fully Autonomous Clinical Agent. Goal: Autonomously drive clinical workflow. Status Tags: [STATUS: INTERVIEWING], [STATUS: ANALYZING], [STATUS: IMAGING_REQ], [STATUS: REPORT_READY], [STATUS: EMERGENCY].`;
     } else {
       systemInstruction = "You are Vaidya AI, an emotion-aware health assistant.";
+    }
+
+    // Get API key (either from request body or environment)
+    const apiKey = userApiKey || process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      res.status(400).json({ 
+        error: "API key required", 
+        needsApiKey: true,
+        message: "Please enter your Groq API key to use this feature"
+      });
+      return;
     }
 
     // Build messages array for Groq
@@ -84,7 +103,7 @@ export const sendChatMessage = async (req: any, res: any) => {
     const response = await fetch(GROQ_API_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${getApiKey()}`,
+        "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -114,10 +133,20 @@ export const sendChatMessage = async (req: any, res: any) => {
 
 export const analyzeMedicalCase = async (req: any, res: any) => {
   try {
-    const { symptoms, language } = req.body;
+    const { symptoms, language, userApiKey } = req.body;
 
     if (!symptoms) {
       res.status(400).json({ error: "Symptoms are required" });
+      return;
+    }
+
+    const apiKey = userApiKey || process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      res.status(400).json({ 
+        error: "API key required",
+        needsApiKey: true,
+        message: "Please enter your Groq API key to use this feature"
+      });
       return;
     }
 
@@ -135,7 +164,7 @@ Please provide the output in the following STRUCTURED FORMAT:
 
 Symptoms/Description: ${symptoms}`;
 
-    const responseText = await callGroq(promptText);
+    const responseText = await callGroq(promptText, undefined, req);
     res.json({ response: responseText });
   } catch (error: any) {
     console.error("Medical Analysis Error:", error);
@@ -148,16 +177,26 @@ Symptoms/Description: ${symptoms}`;
 // Doctor Recommendation
 export const getDoctorRecommendation = async (req: any, res: any) => {
   try {
-    const { symptoms, riskFactors } = req.body;
+    const { symptoms, riskFactors, userApiKey } = req.body;
 
     if (!symptoms) {
       res.status(400).json({ error: "Symptoms are required" });
       return;
     }
 
+    const apiKey = userApiKey || process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      res.status(400).json({ 
+        error: "API key required",
+        needsApiKey: true,
+        message: "Please enter your Groq API key to use this feature"
+      });
+      return;
+    }
+
     const prompt = `Patient Symptoms: ${symptoms}\nRisk Factors: ${riskFactors || 'None'}\nBased on the symptoms and risk factors, recommend the appropriate specialist doctor, provide reasoning, and indicate the urgency level.`;
 
-    const responseText = await callGroq(prompt);
+    const responseText = await callGroq(prompt, undefined, req);
     res.json({ response: responseText });
   } catch (error: any) {
     console.error("Doctor Recommendation Error:", error);
@@ -168,16 +207,26 @@ export const getDoctorRecommendation = async (req: any, res: any) => {
 // Summarize Medical Report
 export const summarizeMedicalReport = async (req: any, res: any) => {
   try {
-    const { reportText } = req.body;
+    const { reportText, userApiKey } = req.body;
 
     if (!reportText) {
       res.status(400).json({ error: "Report text is required" });
       return;
     }
 
+    const apiKey = userApiKey || process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      res.status(400).json({ 
+        error: "API key required",
+        needsApiKey: true,
+        message: "Please enter your Groq API key to use this feature"
+      });
+      return;
+    }
+
     const prompt = `OCR this medical report and summarize the findings. Also audit for any errors or inconsistencies:\n\n${reportText}`;
 
-    const responseText = await callGroq(prompt);
+    const responseText = await callGroq(prompt, undefined, req);
     res.json({ response: responseText });
   } catch (error: any) {
     console.error("Report Summary Error:", error);
@@ -188,16 +237,26 @@ export const summarizeMedicalReport = async (req: any, res: any) => {
 // Drug Interactions
 export const checkDrugInteractions = async (req: any, res: any) => {
   try {
-    const { medications } = req.body;
+    const { medications, userApiKey } = req.body;
 
     if (!medications) {
       res.status(400).json({ error: "Medications list is required" });
       return;
     }
 
+    const apiKey = userApiKey || process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      res.status(400).json({ 
+        error: "API key required",
+        needsApiKey: true,
+        message: "Please enter your Groq API key to use this feature"
+      });
+      return;
+    }
+
     const prompt = `Analyze the following medications for interactions and contraindications. Provide detailed information about any potential drug interactions, side effects, and warnings:\n\nMedications: ${medications}`;
 
-    const responseText = await callGroq(prompt);
+    const responseText = await callGroq(prompt, undefined, req);
     res.json({ response: responseText });
   } catch (error: any) {
     console.error("Drug Interactions Error:", error);
@@ -208,16 +267,26 @@ export const checkDrugInteractions = async (req: any, res: any) => {
 // Digital Twin Analysis
 export const analyzeDigitalTwin = async (req: any, res: any) => {
   try {
-    const { profileData } = req.body;
+    const { profileData, userApiKey } = req.body;
 
     if (!profileData) {
       res.status(400).json({ error: "Profile data is required" });
       return;
     }
 
+    const apiKey = userApiKey || process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      res.status(400).json({ 
+        error: "API key required",
+        needsApiKey: true,
+        message: "Please enter your Groq API key to use this feature"
+      });
+      return;
+    }
+
     const prompt = `Analyze the following health profile data and provide a digital twin analysis. Return JSON with: healthScore (0-100), risks (array of risk factors), actions (recommended health actions), and plan (long-term health plan):\n\n${JSON.stringify(profileData)}`;
 
-    const responseText = await callGroq(prompt, "You are a health analytics AI. Always respond with valid JSON.");
+    const responseText = await callGroq(prompt, "You are a health analytics AI. Always respond with valid JSON.", req);
     res.json({ response: responseText });
   } catch (error: any) {
     console.error("Digital Twin Error:", error);
@@ -228,16 +297,26 @@ export const analyzeDigitalTwin = async (req: any, res: any) => {
 // Fact Check Medical Claims
 export const verifyMedicalClaims = async (req: any, res: any) => {
   try {
-    const { query } = req.body;
+    const { query, userApiKey } = req.body;
 
     if (!query) {
       res.status(400).json({ error: "Query is required" });
       return;
     }
 
+    const apiKey = userApiKey || process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      res.status(400).json({ 
+        error: "API key required",
+        needsApiKey: true,
+        message: "Please enter your Groq API key to use this feature"
+      });
+      return;
+    }
+
     const prompt = `Fact check the following medical/health claim. Provide accurate information and cite reliable sources if possible:\n\nClaim: ${query}`;
 
-    const responseText = await callGroq(prompt);
+    const responseText = await callGroq(prompt, undefined, req);
     res.json({ response: responseText });
   } catch (error: any) {
     console.error("Fact Check Error:", error);

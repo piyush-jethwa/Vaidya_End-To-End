@@ -1,6 +1,14 @@
 // Groq API endpoint (server-side proxy)
 const GROQ_API_BASE = '/api/groq';
 
+// Get API key from localStorage
+const getStoredApiKey = (): string | null => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('groq_api_key');
+  }
+  return null;
+};
+
 /**
  * Feature (A): Multimodal Diagnosis + Radiology Report + Triage
  * Uses server-side Groq API
@@ -13,6 +21,8 @@ export const analyzeMedicalCase = async (
   onUpdate?: (text: string) => void
 ): Promise<string> => {
   try {
+    const userApiKey = getStoredApiKey();
+    
     // Use server-side Groq API
     const response = await fetch(`${GROQ_API_BASE}/analyze`, {
       method: 'POST',
@@ -22,7 +32,8 @@ export const analyzeMedicalCase = async (
       body: JSON.stringify({
         symptoms: symptoms,
         language: language,
-        imageFile: imageFile ? true : undefined
+        imageFile: imageFile ? true : undefined,
+        userApiKey: userApiKey || undefined
       })
     });
 
@@ -55,6 +66,8 @@ export const sendChatMessage = async (
   mode: 'support' | 'clinical_agent' = 'support'
 ): Promise<string> => {
   try {
+    const userApiKey = getStoredApiKey();
+    
     // Use server-side API to avoid CORS
     const response = await fetch(`${GROQ_API_BASE}/chat`, {
       method: 'POST',
@@ -64,7 +77,8 @@ export const sendChatMessage = async (
       body: JSON.stringify({
         message: newMessage,
         history: history,
-        mode: mode
+        mode: mode,
+        userApiKey: userApiKey || undefined
       })
     });
 
@@ -73,6 +87,12 @@ export const sendChatMessage = async (
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const errorData = await response.json();
+        
+        // Check if API key is needed
+        if (errorData.needsApiKey) {
+          throw new Error("Please enter your Groq API key in Settings to use this feature.");
+        }
+        
         throw new Error(errorData.error || `Server error: ${response.status}`);
       } else {
         const errorText = await response.text();
@@ -93,6 +113,8 @@ export const sendChatMessage = async (
  */
 export const getDoctorRecommendation = async (symptoms: string, riskFactors: string): Promise<string> => {
   try {
+    const userApiKey = getStoredApiKey();
+    
     const response = await fetch(`${GROQ_API_BASE}/doctor-recommendation`, {
       method: 'POST',
       headers: {
@@ -100,7 +122,8 @@ export const getDoctorRecommendation = async (symptoms: string, riskFactors: str
       },
       body: JSON.stringify({
         symptoms,
-        riskFactors
+        riskFactors,
+        userApiKey: userApiKey || undefined
       })
     });
 
@@ -131,14 +154,16 @@ export const summarizeMedicalReport = async (file: File): Promise<string> => {
   try {
     // Convert file to text (basic approach - for OCR would need server-side handling)
     const text = await file.text();
-    
+    const userApiKey = getStoredApiKey();
+
     const response = await fetch(`${GROQ_API_BASE}/summarize-report`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        reportText: text
+        reportText: text,
+        userApiKey: userApiKey || undefined
       })
     });
 
@@ -167,13 +192,16 @@ export const summarizeMedicalReport = async (file: File): Promise<string> => {
  */
 export const checkDrugInteractions = async (medList: string, imageFile?: File): Promise<string> => {
   try {
+    const userApiKey = getStoredApiKey();
+    
     const response = await fetch(`${GROQ_API_BASE}/drug-interactions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        medications: medList
+        medications: medList,
+        userApiKey: userApiKey || undefined
       })
     });
 
@@ -202,13 +230,16 @@ export const checkDrugInteractions = async (medList: string, imageFile?: File): 
  */
 export const analyzeDigitalTwin = async (profileData: any): Promise<any> => {
   try {
+    const userApiKey = getStoredApiKey();
+    
     const response = await fetch(`${GROQ_API_BASE}/digital-twin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        profileData
+        profileData,
+        userApiKey: userApiKey || undefined
       })
     });
 
@@ -242,13 +273,16 @@ export const analyzeDigitalTwin = async (profileData: any): Promise<any> => {
  */
 export const verifyMedicalClaims = async (query: string): Promise<string> => {
   try {
+    const userApiKey = getStoredApiKey();
+    
     const response = await fetch(`${GROQ_API_BASE}/fact-check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        query
+        query,
+        userApiKey: userApiKey || undefined
       })
     });
 

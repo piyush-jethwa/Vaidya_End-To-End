@@ -1,12 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Volume2, User, Bot, Stethoscope, HeartHandshake, BrainCircuit, Siren, ClipboardCheck, Microscope, Sun, Moon } from 'lucide-react';
+import { Send, Mic, Volume2, User, Bot, Stethoscope, HeartHandshake, BrainCircuit, Siren, ClipboardCheck, Microscope, Sun, Moon, AlertTriangle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { sendChatMessage } from './services/geminiService';
 import { Message } from '../../types/index';
+import { Link } from 'react-router-dom';
 
 type AgentStatus = 'IDLE' | 'INTERVIEWING' | 'ANALYZING' | 'IMAGING_REQ' | 'REPORT_READY' | 'EMERGENCY' | 'SUPPORT';
 
 const ChatInterface: React.FC = () => {
+  // Check if API key is set
+  const [hasApiKey, setHasApiKey] = useState<boolean | null>(null);
+  
+  useEffect(() => {
+    const checkApiKey = () => {
+      const key = localStorage.getItem('groq_api_key');
+      setHasApiKey(!!key);
+    };
+    checkApiKey();
+    // Check periodically for key changes
+    const interval = setInterval(checkApiKey, 1000);
+    return () => clearInterval(interval);
+  }, []);
   const [mode, setMode] = useState<'support' | 'clinical_agent'>('support');
   const [agentStatus, setAgentStatus] = useState<AgentStatus>('SUPPORT');
   const [darkMode, setDarkMode] = useState(false); // Default to light mode
@@ -137,6 +151,35 @@ const ChatInterface: React.FC = () => {
             return <div className="flex items-center gap-2 text-slate-400 bg-slate-800 px-3 py-1 rounded-full text-xs font-bold">STANDING BY</div>;
     }
   };
+
+  // Show API key prompt if not set
+  if (hasApiKey === false) {
+    return (
+      <div className="flex flex-col h-full rounded-xl shadow-lg border overflow-hidden bg-slate-900 border-slate-800">
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="text-center max-w-md">
+            <div className="w-16 h-16 bg-amber-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="w-8 h-8 text-amber-500" />
+            </div>
+            <h2 className="text-xl font-bold text-white mb-2">API Key Required</h2>
+            <p className="text-slate-400 mb-6">
+              To use the AI chat features, you need to enter your Groq API key. 
+              This key is stored locally in your browser and never sent to our servers.
+            </p>
+            <Link
+              to="/settings"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors"
+            >
+              Enter API Key
+            </Link>
+            <p className="text-sm text-slate-500 mt-4">
+              Get a free key at <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline">console.groq.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`flex flex-col h-full rounded-xl shadow-lg border overflow-hidden transition-all duration-500 ${

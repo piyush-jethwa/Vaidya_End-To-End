@@ -1,10 +1,10 @@
 // Vercel API handler with Express
-// This uses the bundled server code
+// Supports both environment-based and user-provided API keys
 
 import express, { Request, Response } from "express";
 import cors from "cors";
 
-// Lazy load the route handlers to avoid build issues
+// Lazy load the route handlers
 let routeHandlers: any = null;
 
 async function getRouteHandlers() {
@@ -27,10 +27,10 @@ async function getRouteHandlers() {
 const app = express();
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Health check
+// Health check - shows if env keys are available
 app.get("/api/ping", (_req: Request, res: Response) => {
   res.json({ 
     message: process.env.PING_MESSAGE || "pong",
@@ -42,44 +42,122 @@ app.get("/api/ping", (_req: Request, res: Response) => {
   });
 });
 
-// Groq Chat
+// Validate API key endpoint
+app.post("/api/validate-key", async (req: Request, res: Response) => {
+  const { apiKey, provider } = req.body;
+  
+  if (!apiKey) {
+    return res.status(400).json({ error: "API key is required" });
+  }
+
+  if (!provider || !['groq', 'gemini'].includes(provider)) {
+    return res.status(400).json({ error: "Provider must be 'groq' or 'gemini'" });
+  }
+
+  try {
+    // Test the API key by making a minimal request
+    if (provider === 'groq') {
+      const response = await fetch("https://api.groq.com/openai/v1/models", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        }
+      });
+      
+      if (response.ok) {
+        return res.json({ valid: true, message: "Groq API key is valid" });
+      } else {
+        const error = await response.json();
+        return res.status(401).json({ valid: false, error: error.error?.message || "Invalid API key" });
+      }
+    } else if (provider === 'gemini') {
+      // Test Gemini key - just check it's not empty and has expected format
+      if (apiKey.length > 20) {
+        return res.json({ valid: true, message: "Gemini API key format looks valid" });
+      } else {
+        return res.status(401).json({ valid: false, error: "API key seems too short" });
+      }
+    }
+  } catch (error: any) {
+    return res.status(500).json({ valid: false, error: error.message });
+  }
+});
+
+// Groq Chat - accepts user-provided API key
 app.post("/api/groq/chat", async (req: Request, res: Response) => {
+  // If user provides their own key, use it; otherwise fall back to env
+  const userApiKey = req.body.userApiKey;
+  if (userApiKey) {
+    req.body.apiKey = userApiKey;
+  }
+  
   const handlers = await getRouteHandlers();
   return handlers.sendChatMessage(req, res);
 });
 
 // Groq Analyze
 app.post("/api/groq/analyze", async (req: Request, res: Response) => {
+  const userApiKey = req.body.userApiKey;
+  if (userApiKey) {
+    req.body.apiKey = userApiKey;
+  }
+  
   const handlers = await getRouteHandlers();
   return handlers.analyzeMedicalCase(req, res);
 });
 
 // Groq Doctor Recommendation
 app.post("/api/groq/doctor-recommendation", async (req: Request, res: Response) => {
+  const userApiKey = req.body.userApiKey;
+  if (userApiKey) {
+    req.body.apiKey = userApiKey;
+  }
+  
   const handlers = await getRouteHandlers();
   return handlers.getDoctorRecommendation(req, res);
 });
 
 // Groq Summarize Report
 app.post("/api/groq/summarize-report", async (req: Request, res: Response) => {
+  const userApiKey = req.body.userApiKey;
+  if (userApiKey) {
+    req.body.apiKey = userApiKey;
+  }
+  
   const handlers = await getRouteHandlers();
   return handlers.summarizeMedicalReport(req, res);
 });
 
 // Groq Drug Interactions
 app.post("/api/groq/drug-interactions", async (req: Request, res: Response) => {
+  const userApiKey = req.body.userApiKey;
+  if (userApiKey) {
+    req.body.apiKey = userApiKey;
+  }
+  
   const handlers = await getRouteHandlers();
   return handlers.checkDrugInteractions(req, res);
 });
 
 // Groq Digital Twin
 app.post("/api/groq/digital-twin", async (req: Request, res: Response) => {
+  const userApiKey = req.body.userApiKey;
+  if (userApiKey) {
+    req.body.apiKey = userApiKey;
+  }
+  
   const handlers = await getRouteHandlers();
   return handlers.analyzeDigitalTwin(req, res);
 });
 
 // Groq Fact Check
 app.post("/api/groq/fact-check", async (req: Request, res: Response) => {
+  const userApiKey = req.body.userApiKey;
+  if (userApiKey) {
+    req.body.apiKey = userApiKey;
+  }
+  
   const handlers = await getRouteHandlers();
   return handlers.verifyMedicalClaims(req, res);
 });
@@ -97,7 +175,6 @@ app.use((err: any, _req: Request, res: Response, _next: any) => {
 
 // Export as Vercel handler
 export default async function handler(req: any, res: any) {
-  // Let Express handle the request
   return new Promise((resolve, reject) => {
     app(req, res, (err?: any) => {
       if (err) {

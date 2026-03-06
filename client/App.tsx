@@ -29,6 +29,7 @@ import DoctorRecommenderPage from "./pages/DoctorRecommender";
 import DrugInteractions from "./pages/DrugInteractions";
 import DigitalTwinPage from "./pages/DigitalTwin";
 import FactCheckerPage from "./pages/FactChecker";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -59,7 +60,8 @@ const App = () => (
           <Route path="/doctor-recommender" element={<DoctorRecommenderPage />} />
           <Route path="/drug-interactions" element={<DrugInteractions />} />
           <Route path="/digital-twin" element={<DigitalTwinPage />} />
-          <Route path="/fact-checker" element={<FactCheckerPage />} />
+<Route path="/fact-checker" element={<FactCheckerPage />} />
+          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
