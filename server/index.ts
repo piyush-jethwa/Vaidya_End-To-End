@@ -1,4 +1,12 @@
-import "dotenv/config";
+// Only load dotenv if not in production (Vercel provides env vars directly)
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    import("dotenv/config");
+  } catch (e) {
+    // dotenv not available or no .env file - that's ok for Vercel
+  }
+}
+
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
