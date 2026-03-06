@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run build:client",
+  "buildCommand": "npm run build:client && npm run build:server",
   "outputDirectory": "dist/spa",
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/index" },
@@ -9,8 +9,11 @@
   "functions": {
     "api/**/*.ts": {
       "memory": 1024,
-      "maxDuration": 10
+      "maxDuration": 60
     }
+  },
+  "env": {
+    "GROQ_API_KEY": "@groq-api-key"
   }
 }
 

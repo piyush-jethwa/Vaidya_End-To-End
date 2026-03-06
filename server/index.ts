@@ -28,7 +28,7 @@ import {
   getHealthTips 
 } from "./routes/symptom-checker";
 
-// Import Groq routes
+// Import Groq routes only (user has Groq API key)
 import { 
   sendChatMessage,
   analyzeMedicalCase,
