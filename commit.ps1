@@ -1,4 +1,4 @@
 git add -A
-git commit -m "Fix Vercel API connection error - expose GROQ_API_KEY at build time"
+git commit -m "Remove Gemini routes - using Groq only to fix API key error"
 git push origin main
 
