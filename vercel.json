@@ -11,9 +11,6 @@
       "memory": 1024,
       "maxDuration": 60
     }
-  },
-  "env": {
-    "GROQ_API_KEY": "@groq-api-key"
   }
 }
 

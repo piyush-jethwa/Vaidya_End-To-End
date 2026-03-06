@@ -10,6 +10,6 @@
 - [ ] 5. Push changes to GitHub
 
 ### Issue Summary:
-- The API keys (GROQ_API_KEY) stored in Vercel secrets are not being passed to the serverless functions
+- The API keys (GROQ_API_KEY) stored in Vercel secrets are not being passed to the serverless function
 - Need to expose environment variables in the server build
 
