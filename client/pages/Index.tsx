@@ -263,7 +263,7 @@ export default function Index() {
                     Check Symptoms
                   </Button>
                 </a>
-                <a href="https://vaidya-llm-1.streamlit.app/" target="_blank" rel="noopener noreferrer">
+                <a href="https://medcare-1.streamlit.app/" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
                     Check Report/X-ray
                   </Button>
