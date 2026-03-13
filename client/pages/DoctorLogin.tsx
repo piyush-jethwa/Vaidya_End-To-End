@@ -106,7 +106,7 @@ export default function DoctorLogin() {
 
       <div className="w-full max-w-md">
         <Card className="shadow-2xl">
-          <CardHeader className="text-center">
+<CardHeader className="text-center">
             <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
               <Heart className="h-8 w-8 text-blue-600" />
             </div>
@@ -114,13 +114,23 @@ export default function DoctorLogin() {
             <CardDescription>
               Access your dashboard to manage appointments and patients
             </CardDescription>
+            <div className="bg-yellow-100 border border-yellow-400 rounded-lg p-3 mt-4">
+              <p className="text-sm font-semibold text-yellow-800 mb-1">🧪 Demo Login:</p>
+              <p className="text-xs text-yellow-900">
+                sarah.johnson@vaidyaai.com<br/>
+                michael.chen@vaidyaai.com<br/>
+                emily.davis@vaidyaai.com<br/>
+                Any non-empty password (e.g. "123")
+              </p>
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+<label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   Email Address
                 </label>
+                <p className="text-xs text-gray-500 mb-2">Test: sarah.johnson@vaidyaai.com (any password)</p>
                 <Input
                   id="email"
                   type="email"
