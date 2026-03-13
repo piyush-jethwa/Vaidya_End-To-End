@@ -229,7 +229,7 @@ export default function PatientLogin() {
 
       <div className="w-full max-w-md">
         <Card className="shadow-2xl">
-          <CardHeader className="text-center">
+<CardHeader className="text-center">
             <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
               <User className="h-8 w-8 text-purple-600" />
             </div>
@@ -237,6 +237,14 @@ export default function PatientLogin() {
             <CardDescription>
               Login or create your account to book appointments
             </CardDescription>
+            <div className="bg-yellow-100 border border-yellow-400 rounded-lg p-3 mt-4">
+              <p className="text-sm font-semibold text-yellow-800 mb-1">🧪 Demo Login:</p>
+              <p className="text-xs text-yellow-900">
+                r.kakade@email.com<br/>
+                Or signup with your own email
+              </p>
+              <p className="text-xs text-yellow-900 mt-1">Any non-empty password (e.g. "123")</p>
+            </div>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login" className="w-full">
@@ -277,9 +285,10 @@ export default function PatientLogin() {
 
                   {loginType === "email" ? (
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+<label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                         Email Address
                       </label>
+                      <p className="text-xs text-gray-500 mb-2">Test: r.kakade@email.com (any password)</p>
                       <Input
                         id="email"
                         type="email"
