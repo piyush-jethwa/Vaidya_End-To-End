@@ -173,6 +173,11 @@ app.use((err: any, _req: Request, res: Response, _next: any) => {
   res.status(500).json({ error: "Internal Server Error", message: err.message });
 });
 
+// 404 handler
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: "Not Found" });
+});
+
 // Export as Vercel handler
 export default async function handler(req: any, res: any) {
   return new Promise((resolve, reject) => {
@@ -186,4 +191,5 @@ export default async function handler(req: any, res: any) {
     });
   });
 }
+
 
