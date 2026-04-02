@@ -47,6 +47,8 @@ import {
   verifyMedicalClaims
 } from "./routes/groq";
 
+import { validateKey } from "./routes/validate-key";
+
 export function createServer() {
   const app = express();
 
@@ -96,6 +98,9 @@ export function createServer() {
 
   // Contact and utility routes
   app.post("/api/contact", handleContactForm);
+
+  // API key validation
+  app.post("/api/validate-key", validateKey);
 
   // 404 handler - only for unmatched API routes
   // For non-API routes, let Vite handle them (SPA routing)
