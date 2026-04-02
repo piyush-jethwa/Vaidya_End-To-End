@@ -8,6 +8,7 @@ const appointmentsHandlers = await import('../server/routes/appointments.js');
 const groqHandlers = await import('../server/routes/groq.js');
 const symptomCheckerHandlers = await import('../server/routes/symptom-checker.js');
 const demoHandlers = await import('../server/routes/demo.js');
+const validateKeyHandlers = await import('../server/routes/validate-key.js');
 
 // Create app
 const app = express();
@@ -42,6 +43,9 @@ app.post("/api/groq/drug-interactions", groqHandlers.checkDrugInteractions);
 app.post("/api/groq/digital-twin", groqHandlers.analyzeDigitalTwin);
 app.post("/api/groq/fact-check", groqHandlers.verifyMedicalClaims);
 
+// Key validation
+app.post("/api/validate-key", validateKeyHandlers.validateKey);
+
 // Symptom checker
 app.post("/api/symptom-checker/analyze", symptomCheckerHandlers.analyzeSymptoms);
 
@@ -62,3 +66,4 @@ export default async (req: any, res: any) => {
     });
   });
 };
+
