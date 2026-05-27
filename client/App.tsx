@@ -8,8 +8,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import DoctorLogin from "./pages/DoctorLogin";
+import PatientLogin from "./pages/PatientLogin";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import PatientDashboard from "./pages/PatientDashboard";
+import BookAppointment from "./pages/BookAppointment";
 import SymptomChecker from "./pages/SymptomChecker";
 import HospitalCommandCenter from "./pages/HospitalCommandCenter";
 import SurgeForecastPage from "./pages/SurgeForecast";
@@ -38,8 +41,11 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/doctor/login" element={<DoctorLogin />} />
+          <Route path="/patient/login" element={<PatientLogin />} />
           <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
           <Route path="/patient/dashboard" element={<PatientDashboard />} />
+          <Route path="/book-appointment" element={<BookAppointment />} />
           <Route path="/symptom-checker" element={<SymptomChecker />} />
           <Route path="/hospital-command-center" element={<HospitalCommandCenter />} />
           <Route path="/surge-forecast" element={<SurgeForecastPage />} />
