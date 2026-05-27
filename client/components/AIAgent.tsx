@@ -1,21 +1,22 @@
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   MessageCircle,
   X,
   Send,
   Bot,
-  Calendar,
   Stethoscope,
-  User,
-  Heart,
-  Zap,
   Sparkles,
 } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface Message {
   id: string;
@@ -29,37 +30,38 @@ interface Message {
   }>;
 }
 
-export default function AIAgent() {
+const SYMPTOMS_URL = "https://ai-chatbot-personal.streamlit.app/";
+
+export default function AIAgent(): React.ReactElement {}}
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // keep for future use
   const location = useLocation();
+  void location;
+
   const navigate = useNavigate();
 
-  // Initialize with welcome message
   useEffect(() => {
     if (messages.length === 0) {
       addAIMessage(
-        "👋 Hi! I'm VAIDYA, your AI health assistant. I can help you instantly with appointments, symptoms, navigation, or health questions. What can I do for you?",
+        "👋 Hi! I'm VAIDYA, your AI health assistant. I can help you instantly with symptoms, navigation, or health questions. What can I do for you?",
         [
           {
-            label: "📅 Book Appointment",
-            action: () => navigate("/book-appointment"),
-          },
-          {
             label: "🩺 Check Symptoms",
-            action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer"),
+            action: () =>
+              window.open(SYMPTOMS_URL, "_blank", "noopener,noreferrer"),
           },
           { label: "👨‍⚕️ Find Doctors", action: () => handleFindDoctors() },
           { label: "💡 Health Tips", action: () => handleHealthTips() },
         ],
       );
     }
-  }, []);
+  }, [messages.length]);
 
-  // Scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -73,14 +75,16 @@ export default function AIAgent() {
       variant?: "default" | "outline";
     }>,
   ) => {
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      text,
-      sender,
-      timestamp: new Date(),
-      actions,
-    };
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        text,
+        sender,
+        timestamp: new Date(),
+        actions,
+      },
+    ]);
   };
 
   const addAIMessage = (
@@ -92,14 +96,10 @@ export default function AIAgent() {
     }>,
   ) => {
     setIsTyping(true);
-    // Much faster response - reduced from 1-2 seconds to 200-500ms
-    setTimeout(
-      () => {
-        setIsTyping(false);
-        addMessage(text, "ai", actions);
-      },
-      200 + Math.random() * 300,
-    ); // Fast response time
+    setTimeout(() => {
+      setIsTyping(false);
+      addMessage(text, "ai", actions);
+    }, 200 + Math.random() * 300);
   };
 
   const handleSendMessage = () => {
@@ -109,26 +109,13 @@ export default function AIAgent() {
     const userInput = inputText.toLowerCase();
     setInputText("");
 
-    // Immediate AI Response - no delay
     generateAIResponse(userInput);
   };
 
   const generateAIResponse = (userInput: string) => {
-    // Fast intent detection and immediate response
+    // Booking & login routes are removed in this UI.
+
     if (
-      userInput.includes("appointment") ||
-      userInput.includes("book") ||
-      userInput.includes("schedule")
-    ) {
-      addAIMessage(
-        "🚀 Let's get you booked! I can take you directly to our smart booking system or help you find the right doctor first.",
-        [
-          { label: "📅 Book Now", action: () => navigate("/book-appointment") },
-          { label: "👨‍⚕️ Find Doctor", action: () => handleFindDoctors() },
-          { label: "⚡ Quick Info", action: () => handleQuickBookingInfo() },
-        ],
-      );
-    } else if (
       userInput.includes("symptom") ||
       userInput.includes("pain") ||
       userInput.includes("fever") ||
@@ -136,146 +123,137 @@ export default function AIAgent() {
       userInput.includes("feel")
     ) {
       addAIMessage(
-        "🩺 I'll analyze your symptoms immediately! Our AI can provide instant insights and urgency assessment.",
+        "🩺 I'll analyze your symptoms immediately. Use the AI symptom checker for preliminary insights.",
         [
           {
             label: "🔍 Check Symptoms",
-            action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer"),
+            action: () =>
+              window.open(SYMPTOMS_URL, "_blank", "noopener,noreferrer"),
           },
-          { label: "🚨 Emergency?", action: () => handleEmergencyCheck() },
           { label: "💊 Common Issues", action: () => handleCommonSymptoms() },
         ],
       );
-    } else if (
+      return;
+    }
+
+    if (
       userInput.includes("doctor") ||
-      userInput.includes("specialist")
+      userInput.includes("specialist") ||
+      userInput.includes("find")
     ) {
       handleFindDoctors();
-    } else if (
+      return;
+    }
+
+    if (
       userInput.includes("login") ||
       userInput.includes("account") ||
       userInput.includes("register") ||
       userInput.includes("sign")
     ) {
       addAIMessage(
-        "🔐 Account access made easy! Are you a patient or doctor?",
+        "🔐 Login/Sign up is disabled in this UI. I can still help with symptom analysis and doctor recommendations.",
         [
           {
-            label: "👤 Patient Login",
-            action: () => navigate("/patient/login"),
+            label: "🩺 Check Symptoms",
+            action: () =>
+              window.open(SYMPTOMS_URL, "_blank", "noopener,noreferrer"),
           },
-          { label: "👨‍⚕️ Doctor Login", action: () => navigate("/doctor/login") },
-          { label: "✨ New Patient", action: () => handleNewPatientInfo() },
+          { label: "👨‍⚕️ Find Doctors", action: () => handleFindDoctors() },
         ],
       );
-    } else if (
+      return;
+    }
+
+    if (
+      userInput.includes("appointment") ||
+      userInput.includes("book") ||
+      userInput.includes("schedule")
+    ) {
+      addAIMessage(
+        "📌 Booking is disabled in this UI. Share your symptoms and I’ll guide you to the next best step.",
+        [
+          {
+            label: "🩺 Check Symptoms",
+            action: () =>
+              window.open(SYMPTOMS_URL, "_blank", "noopener,noreferrer"),
+          },
+          { label: "👨‍⚕️ Find Doctors", action: () => handleFindDoctors() },
+          { label: "💡 Health Tips", action: () => handleHealthTips() },
+        ],
+      );
+      return;
+    }
+
+    if (
       userInput.includes("health tip") ||
       userInput.includes("advice") ||
       userInput.includes("wellness") ||
       userInput.includes("tips")
     ) {
       handleHealthTips();
-    } else if (
+      return;
+    }
+
+    if (
       userInput.includes("emergency") ||
       userInput.includes("urgent") ||
       userInput.includes("911") ||
       userInput.includes("help")
     ) {
       handleEmergencyCheck();
-    } else if (
-      userInput.includes("fast") ||
-      userInput.includes("quick") ||
-      userInput.includes("immediate")
-    ) {
-      addAIMessage("⚡ Speed is my specialty! I'm here for instant help:", [
-        { label: "🚀 Quick Book", action: () => navigate("/book-appointment") },
-        {
-          label: "🔥 Fast Symptoms",
-          action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer"),
-        },
-        { label: "⭐ Express Help", action: () => handleExpressHelp() },
-      ]);
-    } else if (
-      userInput.includes("how") ||
-      userInput.includes("what") ||
-      userInput.includes("can you")
-    ) {
-      addAIMessage(
-        "💫 I'm your instant health companion! Here's what I can do:",
-        [
-          {
-            label: "📅 Book Appointments",
-            action: () => navigate("/book-appointment"),
-          },
-          {
-            label: "🔍 Analyze Symptoms",
-            action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer"),
-          },
-          { label: "🏥 Find Doctors", action: () => handleFindDoctors() },
-          { label: "🎯 Smart Help", action: () => handleSmartHelp() },
-        ],
-      );
-    } else {
-      // General fast response
-      addAIMessage(
-        "🤖 Got it! I'm here to help instantly. What would you like to do?",
-        [
-          {
-            label: "📅 Book Appointment",
-            action: () => navigate("/book-appointment"),
-          },
-          {
-            label: "🩺 Check Symptoms",
-            action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer"),
-          },
-          { label: "🏠 Main Menu", action: () => navigate("/") },
-          { label: "🔄 Try Again", action: () => setInputText("") },
-        ],
-      );
+      return;
     }
+
+    addAIMessage(
+      "🤖 Got it! What would you like to do?",
+      [
+        {
+          label: "🩺 Check Symptoms",
+          action: () =>
+            window.open(SYMPTOMS_URL, "_blank", "noopener,noreferrer"),
+        },
+        { label: "👨‍⚕️ Find Doctors", action: () => handleFindDoctors() },
+        { label: "💡 Health Tips", action: () => handleHealthTips() },
+        { label: "🏠 Main Menu", action: () => navigate("/") },
+      ],
+    );
   };
 
   const handleFindDoctors = () => {
-    addAIMessage("🏥 Instant doctor search! Choose your specialty:", [
-      { label: "❤️ Cardiology", action: () => handleSpecialty("Cardiology") },
-      { label: "🧴 Dermatology", action: () => handleSpecialty("Dermatology") },
-      {
-        label: "👨‍⚕️ General Medicine",
-        action: () => handleSpecialty("General Medicine"),
-      },
-      { label: "🏥 View All", action: () => navigate("/book-appointment") },
-    ]);
+    addAIMessage(
+      "🏥 Instant doctor guidance. Choose a specialty:",
+      [
+        { label: "❤️ Cardiology", action: () => handleSpecialty("Cardiology") },
+        { label: "🧴 Dermatology", action: () => handleSpecialty("Dermatology") },
+        { label: "👨‍⚕️ General Medicine", action: () => handleSpecialty("General Medicine") },
+      ],
+    );
   };
 
   const handleSpecialty = (specialty: string) => {
-    addAIMessage(
-      `⚡ ${specialty} specialists ready! Quick booking or more info?`,
-      [
-        { label: "🚀 Book Now", action: () => navigate("/book-appointment") },
-        {
-          label: "📋 Learn More",
-          action: () => handleSpecialtyInfo(specialty),
-        },
-      ],
-    );
+    addAIMessage(`⚡ ${specialty} specialists ready. Here’s what they cover:`, [
+      { label: "📋 Learn More", action: () => handleSpecialtyInfo(specialty) },
+    ]);
   };
 
   const handleSpecialtyInfo = (specialty: string) => {
     const specialtyInfo: Record<string, string> = {
       Cardiology:
-        "❤️ Heart & blood vessel experts. Treats: hypertension, heart disease, arrhythmias. Quick booking available!",
+        "❤️ Heart & blood vessel experts. Treats: hypertension, heart disease, arrhythmias.",
       Dermatology:
-        "🧴 Skin, hair & nail specialists. Treats: acne, eczema, skin cancer screening. Fast appointments!",
+        "🧴 Skin, hair & nail specialists. Treats: acne, eczema, skin cancer screening.",
       "General Medicine":
-        "👨‍⚕️ Complete primary care. Handles: checkups, chronic conditions, general health. Book instantly!",
+        "👨‍⚕️ Complete primary care. Handles: checkups, chronic conditions, general health.",
     };
 
     addAIMessage(
-      specialtyInfo[specialty] || "🏥 Expert specialists ready to help you!",
+      specialtyInfo[specialty] || "🏥 Specialist guidance available.",
       [
         {
-          label: "📅 Book Appointment",
-          action: () => navigate("/book-appointment"),
+          label: "🩺 Check Symptoms",
+          action: () =>
+            window.open(SYMPTOMS_URL, "_blank", "noopener,noreferrer"),
         },
       ],
     );
@@ -293,95 +271,36 @@ export default function AIAgent() {
     const randomTip = tips[Math.floor(Math.random() * tips.length)];
     addAIMessage(`✨ Quick health boost: ${randomTip}`, [
       { label: "💡 More Tips", action: () => handleHealthTips() },
-      { label: "🩺 Check Health", action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer") },
+      {
+        label: "🩺 Check Symptoms",
+        action: () =>
+          window.open(SYMPTOMS_URL, "_blank", "noopener,noreferrer"),
+      },
     ]);
   };
 
   const handleEmergencyCheck = () => {
     addAIMessage(
-      "🚨 For emergencies: Call 911 immediately! For urgent care, I can help you find options:",
+      "🚨 For emergencies: Call 911 immediately. For urgent care, I can help with symptom guidance.",
       [
-        { label: "🏥 Find Urgent Care", action: () => handleUrgentCare() },
         {
           label: "🔍 Quick Symptoms",
-          action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer"),
+          action: () =>
+            window.open(SYMPTOMS_URL, "_blank", "noopener,noreferrer"),
         },
-        { label: "📞 Emergency Info", action: () => handleEmergencyInfo() },
+        { label: "💡 Health Tips", action: () => handleHealthTips() },
       ],
-    );
-  };
-
-  const handleUrgentCare = () => {
-    addAIMessage(
-      "🏥 Urgent care guidance: Contact your doctor first, then urgent care center or ER based on severity.",
-      [
-        {
-          label: "📅 Quick Booking",
-          action: () => navigate("/book-appointment"),
-        },
-      ],
-    );
-  };
-
-  const handleEmergencyInfo = () => {
-    addAIMessage(
-      "📞 Emergency numbers: 911 (Emergency), Poison Control (1-800-222-1222). For non-emergency urgent care, book quickly!",
-      [
-        {
-          label: "🚀 Book Urgent",
-          action: () => navigate("/book-appointment"),
-        },
-      ],
-    );
-  };
-
-  const handleQuickBookingInfo = () => {
-    addAIMessage(
-      "⚡ Quick booking tips: Choose your doctor, select time, fill details - done in 2 minutes!",
-      [
-        {
-          label: "🚀 Start Booking",
-          action: () => navigate("/book-appointment"),
-        },
-      ],
-    );
-  };
-
-  const handleNewPatientInfo = () => {
-    addAIMessage(
-      "✨ Welcome new patient! Registration is super quick - just basic info and you're ready to book!",
-      [{ label: "📝 Sign Up", action: () => navigate("/patient/login") }],
     );
   };
 
   const handleCommonSymptoms = () => {
     addAIMessage(
-      "💊 Common issues I help with: headaches, fever, cough, stomach pain, fatigue. What's bothering you?",
-      [{ label: "🔍 Analyze Now", action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer") }],
-    );
-  };
-
-  const handleExpressHelp = () => {
-    addAIMessage(
-      "🚀 Express services: 2-min booking, instant symptom check, immediate doctor info!",
-      [
-        { label: "⚡ Book Fast", action: () => navigate("/book-appointment") },
-        { label: "🔥 Quick Check", action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer") },
-      ],
-    );
-  };
-
-  const handleSmartHelp = () => {
-    addAIMessage(
-      "🎯 Smart AI features: symptom analysis, doctor matching, appointment optimization, health insights!",
+      "💊 Common issues I can help with: headaches, fever, cough, stomach pain, fatigue. What’s bothering you?",
       [
         {
-          label: "🧠 Try AI Symptoms",
-          action: () => window.open("https://ai-chatbot-personal.streamlit.app/", "_blank", "noopener,noreferrer"),
-        },
-        {
-          label: "🎯 Smart Booking",
-          action: () => navigate("/book-appointment"),
+          label: "🔍 Analyze Now",
+          action: () =>
+            window.open(SYMPTOMS_URL, "_blank", "noopener,noreferrer"),
         },
       ],
     );
@@ -389,7 +308,6 @@ export default function AIAgent() {
 
   return (
     <>
-      {/* Floating Action Button - Enhanced with pulsing animation */}
       <div className="fixed bottom-6 right-6 z-50">
         {!isOpen && (
           <Button
@@ -397,15 +315,14 @@ export default function AIAgent() {
             className="h-16 w-16 rounded-full bg-gradient-to-r from-purple-600 via-blue-600 to-purple-700 hover:from-purple-700 hover:via-blue-700 hover:to-purple-800 shadow-2xl relative overflow-hidden group"
             size="lg"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             <MessageCircle className="h-7 w-7 relative z-10" />
-            <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full animate-pulse"></div>
+            <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full animate-pulse" />
             <Sparkles className="absolute top-1 right-1 h-3 w-3 text-yellow-300 animate-pulse" />
           </Button>
         )}
       </div>
 
-      {/* Chat Interface - Enhanced */}
       {isOpen && (
         <div className="fixed bottom-6 right-6 z-50 w-96 h-[600px] max-h-[80vh]">
           <Card className="h-full flex flex-col shadow-2xl border-2 border-purple-200 bg-white">
@@ -414,16 +331,14 @@ export default function AIAgent() {
                 <div className="flex items-center space-x-2">
                   <div className="relative">
                     <Bot className="h-6 w-6" />
-                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-400 rounded-full animate-pulse"></div>
+                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-400 rounded-full animate-pulse" />
                   </div>
                   <div>
                     <CardTitle className="text-lg flex items-center">
                       VAIDYA AI Assistant
-                      <Zap className="h-4 w-4 ml-2 animate-pulse" />
+                      <Stethoscope className="h-4 w-4 ml-2 animate-pulse" />
                     </CardTitle>
-                    <p className="text-sm text-purple-100">
-                      ⚡ Instant Health Support
-                    </p>
+                    <p className="text-sm text-purple-100">⚡ Instant Health Support</p>
                   </div>
                 </div>
                 <Button
@@ -438,7 +353,6 @@ export default function AIAgent() {
             </CardHeader>
 
             <CardContent className="flex-1 flex flex-col p-0">
-              {/* Messages Area */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((message) => (
                   <div
@@ -476,30 +390,30 @@ export default function AIAgent() {
                   <div className="flex justify-start">
                     <div className="bg-gradient-to-r from-gray-100 to-gray-50 rounded-lg p-3 border border-gray-200">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" />
                         <div
                           className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"
                           style={{ animationDelay: "0.1s" }}
-                        ></div>
+                        />
                         <div
                           className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
                           style={{ animationDelay: "0.2s" }}
-                        ></div>
+                        />
                       </div>
                     </div>
                   </div>
                 )}
+
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Input Area - Enhanced */}
               <div className="border-t bg-white p-4">
                 <div className="flex space-x-2">
                   <Input
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
-                    placeholder="Ask me anything... I respond instantly!"
-                    onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                    placeholder="Ask me anything..."
+                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                     className="flex-1 border-2 border-purple-200 focus:border-purple-400"
                   />
                   <Button
@@ -527,3 +441,4 @@ export default function AIAgent() {
     </>
   );
 }
+
