@@ -348,7 +348,8 @@ export default function PatientLogin() {
                     </a>
                   </div>
 
-                  <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={isLoginLoading}>
+                  {/* Sign In button hidden */}
+                  {/* <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={isLoginLoading}>
                     {isLoginLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -357,11 +358,12 @@ export default function PatientLogin() {
                     ) : (
                       "Sign In"
                     )}
-                  </Button>
+                  </Button> */}
                 </form>
               </TabsContent>
               
-              <TabsContent value="signup">
+              {/* Sign Up section hidden */}
+              {/* <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
@@ -497,7 +499,7 @@ export default function PatientLogin() {
                     )}
                   </Button>
                 </form>
-              </TabsContent>
+              </TabsContent>*/}
             </Tabs>
 
             <div className="mt-4 text-center">
