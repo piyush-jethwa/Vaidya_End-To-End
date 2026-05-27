@@ -697,19 +697,19 @@ export default function Index() {
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors block"
                 >
-                  Book Appointment
+                  {/* Book Appointment
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors block"
-                >
+                > */}
                   Symptom Checker
                 </a>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors block"
                 >
-                  Doctor Portal
+                  {/* Doctor Portal
                 </a>
                 <a
                   href="#"
@@ -720,7 +720,7 @@ export default function Index() {
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors block"
-                >
+                > */}
                   Check Report/X-ray
                 </a>
               </div>
