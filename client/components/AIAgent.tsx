@@ -32,7 +32,7 @@ interface Message {
 
 const SYMPTOMS_URL = "https://ai-chatbot-personal.streamlit.app/";
 
-export default function AIAgent(): React.ReactElement {}}
+export default function AIAgent() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
