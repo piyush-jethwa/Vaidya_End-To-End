@@ -26,12 +26,12 @@ import {
   Instagram,
   Linkedin,
   Stethoscope,
-  UserPlus,
   ClipboardList,
   CheckCircle,
   Bot,
   Brain,
   Building2,
+  Settings,
 } from "lucide-react";
 
 export default function Index() {
@@ -100,6 +100,61 @@ export default function Index() {
     },
   ];
 
+  const coreOptions = [
+    {
+      title: "Chat Assistant",
+      description: "Conversational AI for health queries and guidance.",
+      icon: Bot,
+      href: "/chat-assistant",
+      category: "Core",
+    },
+    {
+      title: "Triage & Radiology",
+      description: "Symptom triage and imaging insights in one workflow.",
+      icon: Brain,
+      href: "/triage-radiology",
+      category: "Core",
+    },
+    {
+      title: "Report Auditor",
+      description: "Audit medical reports for completeness and clarity.",
+      icon: ClipboardList,
+      href: "/report-auditor",
+      category: "Core",
+    },
+    {
+      title: "Doctor Recommender",
+      description: "Recommend the right specialist based on symptoms and context.",
+      icon: Stethoscope,
+      href: "/doctor-recommender",
+      category: "Core",
+    },
+    {
+      title: "Drug Interactions",
+      description: "Check medication compatibility and interaction risks.",
+      icon: Shield,
+      href: "/drug-interactions",
+      category: "Next-Gen",
+      badge: "Next-Gen",
+    },
+    {
+      title: "Digital Twin",
+      description: "Personalized simulated health model for scenario testing.",
+      icon: Users,
+      href: "/digital-twin",
+      category: "Next-Gen",
+      badge: "Next-Gen",
+    },
+    {
+      title: "Fact Checker",
+      description: "Verify health claims and references for accuracy.",
+      icon: CheckCircle,
+      href: "/fact-checker",
+      category: "Next-Gen",
+      badge: "Next-Gen",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
       {/* Navigation */}
@@ -118,6 +173,12 @@ export default function Index() {
                 Home
               </a>
               <a
+                href="#core"
+                className="text-gray-700 hover:text-purple-600 transition-colors"
+              >
+                Core
+              </a>
+              <a
                 href="#about"
                 className="text-gray-700 hover:text-purple-600 transition-colors"
               >
@@ -129,30 +190,27 @@ export default function Index() {
               >
                 Reviews
               </a>
-              <a
+<a
                 href="#contact"
                 className="text-gray-700 hover:text-purple-600 transition-colors"
               >
                 Contact
               </a>
+              <Link
+                to="/settings"
+                className="text-gray-700 hover:text-purple-600 transition-colors"
+              >
+                Settings
+              </Link>
             </div>
             <div className="flex space-x-2">
-              {/* <Link to="/hospital-command-center"> */}
-                {/* <Button variant="outline" size="sm" className="border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white">
+              <Link to="/hospital-command-center">
+                <Button variant="outline" size="sm" className="border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white">
                   <Building2 className="h-4 w-4 mr-1" />
-                  Hospital Command Center */}
+                  Hospital Command Center
                 </Button>
               </Link>
-              {/* <Link to="/doctor/login">
-                <Button variant="outline" size="sm">
-                  Doctor Login */}
-                {/* </Button> */}
-              </Link>
-              <Link to="/patient/login">
-                <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
-                  Patient Login
-                </Button>
-              </Link>
+
             </div>
           </div>
         </div>
@@ -182,24 +240,63 @@ export default function Index() {
                 booking, and 24/7 AI assistance for all your health needs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                {/* <Link to="/book-appointment">
-                  <Button
-                    size="lg"
-                    className="bg-purple-600 hover:bg-purple-700"
-                  > */}
-                    {/* Book Appointment
-                  </Button>
-                </Link>
-                <a href="https://vaidya-llm-1.streamlit.app/" target="_blank" rel="noopener noreferrer"> */}
+
+                <a href="https://vaidya-llm-1.streamlit.app/" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" variant="outline">
                     Check Symptoms
                   </Button>
                 </a>
-                <a href="https://medcare-1.streamlit.app/" target="_blank" rel="noopener noreferrer">
+                <a href="https://vaidya-llm-1.streamlit.app/" target="_blank" rel="noopener noreferrer">
                   <Button size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white">
                     Check Report/X-ray
                   </Button>
                 </a>
+              </div>
+
+              {/* Additional Features */}
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link to="/chat-assistant">
+                  <Button size="sm" variant="outline" className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white">
+                    <Bot className="h-4 w-4 mr-1" />
+                    Chat Assistant
+                  </Button>
+                </Link>
+                <Link to="/triage-radiology">
+                  <Button size="sm" variant="outline" className="border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white">
+                    <Brain className="h-4 w-4 mr-1" />
+                    Triage & Radiology
+                  </Button>
+                </Link>
+                <Link to="/report-auditor">
+                  <Button size="sm" variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white">
+                    <ClipboardList className="h-4 w-4 mr-1" />
+                    Report Auditor
+                  </Button>
+                </Link>
+                <Link to="/doctor-recommender">
+                  <Button size="sm" variant="outline" className="border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white">
+                    <Stethoscope className="h-4 w-4 mr-1" />
+                    Doctor Recommender
+                  </Button>
+                </Link>
+                <Link to="/drug-interactions">
+                  <Button size="sm" variant="outline" className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white">
+                    <Shield className="h-4 w-4 mr-1" />
+                    Drug Interactions
+                  </Button>
+                </Link>
+                <Link to="/digital-twin">
+                  <Button size="sm" variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white">
+                    <Users className="h-4 w-4 mr-1" />
+                    Digital Twin
+                  </Button>
+                </Link>
+                <Link to="/fact-checker">
+                  <Button size="sm" variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white">
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    Fact Checker
+                  </Button>
+                </Link>
               </div>
 
               <div className="mt-12 grid grid-cols-3 gap-8">
@@ -226,33 +323,64 @@ export default function Index() {
                   Quick Actions
                 </h3>
                 <div className="space-y-4">
-                  <Link to="/patient/login">
-                    <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors cursor-pointer">
-                      <UserPlus className="h-6 w-6 text-purple-600" />
-                      <span className="text-gray-700">Register as Patient</span>
-                    </div>
-                  </Link>
-                  {/* <Link to="/book-appointment">
-                    <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer"> */}
-                      <Calendar className="h-6 w-6 text-blue-600" />
-                      <span className="text-gray-700">Book Appointment</span>
-                    </div>
-                  </Link>
                   <a href="https://ai-chatbot-personal.streamlit.app/" target="_blank" rel="noopener noreferrer">
                     <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors cursor-pointer">
                       <ClipboardList className="h-6 w-6 text-green-600" />
                       <span className="text-gray-700">Check Symptoms</span>
                     </div>
                   </a>
-                  {/* <Link to="/doctor/login"> */}
-                    <div className="flex items-center space-x-3 p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors cursor-pointer">
-                      <Stethoscope className="h-6 w-6 text-orange-600" />
-                      <span className="text-gray-700">Doctor Portal</span>
-                    </div>
-                  </Link>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Core Section */}
+      <section id="core" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              Core
+            </h2>
+            <p className="text-xl text-gray-600">
+              Launch VAIDYA AI agents and utilities.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {coreOptions.map((opt) => (
+              <Card
+                key={opt.title}
+                className="hover:shadow-lg transition-shadow"
+              >
+                <CardHeader>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <opt.icon className="h-6 w-6 text-purple-600" />
+                    </div>
+                    {opt.badge ? (
+                      <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-100">
+                        {opt.badge}
+                      </Badge>
+                    ) : null}
+                  </div>
+                  <CardTitle className="text-xl mt-4">{opt.title}</CardTitle>
+                  <CardDescription className="text-gray-600">
+                    {opt.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Link to={opt.href}>
+                    <Button
+                      className="w-full bg-purple-600 hover:bg-purple-700"
+                    >
+                      Open
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -534,6 +662,12 @@ export default function Index() {
                   className="text-gray-400 hover:text-white transition-colors block"
                 >
                   Home
+                </a>
+                <a
+                  href="#core"
+                  className="text-gray-400 hover:text-white transition-colors block"
+                >
+                  Core
                 </a>
                 <a
                   href="#about"
